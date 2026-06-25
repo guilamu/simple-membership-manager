@@ -77,7 +77,6 @@ Yes, SMM implements the exact function compatibility stubs used by the `advanced
 │   ├── metabox-view.php               # Restriction metabox HTML layout
 │   └── admin-styles.css               # Admin stylesheet overrides
 └── languages
-    ├── index.php                      # Silence is golden
     └── rcp.pot                        # Translation template file
 ```
 
