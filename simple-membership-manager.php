@@ -156,6 +156,7 @@ function smm_plugin_row_meta_links( $links, $file ) {
 register_activation_hook( __FILE__, 'smm_activate' );
 function smm_activate() {
 	smm_setup_globals();
+
 	if ( ! get_option( 'rcp_is_installed' ) ) {
 		update_option( 'rcp_is_installed', '1' );
 	}
@@ -165,4 +166,131 @@ function smm_activate() {
 	if ( ! get_option( 'rcp_db_version' ) ) {
 		update_option( 'rcp_db_version', '1.6' );
 	}
+
+	// Create database tables if they don't exist (fresh install without RCP).
+	smm_create_tables();
+}
+
+/**
+ * Create all required database tables using dbDelta (idempotent).
+ *
+ * Safe for both fresh installs and RCP migrations — dbDelta only
+ * creates tables that don't already exist.
+ */
+function smm_create_tables() {
+	global $wpdb;
+
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+	$charset_collate = $wpdb->get_charset_collate();
+
+	// 1. Membership Levels table (wp_restrict_content_pro)
+	$levels_table = smm_db_levels_table();
+	$sql = "CREATE TABLE {$levels_table} (
+		id bigint(9) UNSIGNED NOT NULL AUTO_INCREMENT,
+		name varchar(200) NOT NULL,
+		description longtext NOT NULL,
+		duration smallint UNSIGNED NOT NULL DEFAULT 0,
+		duration_unit tinytext NOT NULL,
+		trial_duration smallint(6) UNSIGNED NOT NULL DEFAULT 0,
+		trial_duration_unit tinytext NOT NULL,
+		price tinytext NOT NULL,
+		fee tinytext NOT NULL,
+		maximum_renewals smallint UNSIGNED NOT NULL DEFAULT 0,
+		after_final_payment tinytext NOT NULL,
+		level mediumint UNSIGNED NOT NULL DEFAULT 0,
+		role tinytext NOT NULL,
+		status varchar(12) NOT NULL DEFAULT 'active',
+		list_order mediumint UNSIGNED NOT NULL DEFAULT 0,
+		date_created datetime NOT NULL,
+		date_modified datetime NOT NULL,
+		uuid varchar(100) NOT NULL DEFAULT '',
+		PRIMARY KEY (id),
+		KEY name (name(191)),
+		KEY status (status)
+	) {$charset_collate};";
+	dbDelta( $sql );
+
+	// 2. Membership Level Meta table (wp_rcp_subscription_level_meta)
+	$level_meta_table = smm_db_level_meta_table();
+	$sql = "CREATE TABLE {$level_meta_table} (
+		meta_id bigint(20) NOT NULL AUTO_INCREMENT,
+		level_id bigint(20) NOT NULL DEFAULT '0',
+		meta_key varchar(255) DEFAULT NULL,
+		meta_value longtext,
+		PRIMARY KEY (meta_id),
+		KEY level_id (level_id),
+		KEY meta_key (meta_key(191))
+	) {$charset_collate};";
+	dbDelta( $sql );
+
+	// 3. Customers table (wp_rcp_customers)
+	$customers_table = smm_db_customers_table();
+	$sql = "CREATE TABLE {$customers_table} (
+		id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		user_id bigint(20) unsigned NOT NULL DEFAULT '0',
+		date_registered datetime NOT NULL,
+		email_verification enum('verified', 'pending', 'none') DEFAULT 'none',
+		last_login datetime DEFAULT NULL,
+		has_trialed smallint unsigned DEFAULT NULL,
+		ips longtext NOT NULL DEFAULT '',
+		notes longtext NOT NULL DEFAULT '',
+		uuid varchar(100) NOT NULL DEFAULT '',
+		PRIMARY KEY (id),
+		KEY user_id (user_id)
+	) {$charset_collate};";
+	dbDelta( $sql );
+
+	// 4. Memberships table (wp_rcp_memberships)
+	$memberships_table = smm_db_memberships_table();
+	$sql = "CREATE TABLE {$memberships_table} (
+		id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		customer_id bigint(20) unsigned NOT NULL DEFAULT '0',
+		user_id bigint(20) unsigned DEFAULT NULL,
+		object_id bigint(9) NOT NULL DEFAULT '0',
+		object_type varchar(20) DEFAULT NULL,
+		currency varchar(20) NOT NULL DEFAULT 'USD',
+		initial_amount mediumtext NOT NULL,
+		recurring_amount mediumtext NOT NULL,
+		created_date datetime NOT NULL,
+		activated_date datetime DEFAULT NULL,
+		trial_end_date datetime DEFAULT NULL,
+		renewed_date datetime DEFAULT NULL,
+		cancellation_date datetime DEFAULT NULL,
+		expiration_date datetime DEFAULT NULL,
+		payment_plan_completed_date datetime DEFAULT NULL,
+		auto_renew smallint unsigned NOT NULL DEFAULT '0',
+		times_billed smallint unsigned NOT NULL DEFAULT '0',
+		maximum_renewals smallint unsigned NOT NULL DEFAULT '0',
+		status varchar(12) NOT NULL DEFAULT 'pending',
+		gateway_customer_id tinytext DEFAULT NULL,
+		gateway_subscription_id tinytext DEFAULT NULL,
+		gateway tinytext NOT NULL DEFAULT '',
+		signup_method tinytext NOT NULL DEFAULT '',
+		subscription_key varchar(32) NOT NULL DEFAULT '',
+		notes longtext NOT NULL DEFAULT '',
+		upgraded_from bigint(20) unsigned DEFAULT NULL,
+		date_modified datetime NOT NULL,
+		disabled smallint unsigned DEFAULT NULL,
+		uuid varchar(100) NOT NULL DEFAULT '',
+		PRIMARY KEY (id),
+		KEY customer_id (customer_id),
+		KEY object_id (object_id),
+		KEY status (status),
+		KEY disabled (disabled)
+	) {$charset_collate};";
+	dbDelta( $sql );
+
+	// 5. Membership Meta table (wp_rcp_membershipmeta)
+	$membership_meta_table = smm_db_membership_meta_table();
+	$sql = "CREATE TABLE {$membership_meta_table} (
+		meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		rcp_membership_id bigint(20) unsigned NOT NULL DEFAULT '0',
+		meta_key varchar(255) DEFAULT NULL,
+		meta_value longtext DEFAULT NULL,
+		PRIMARY KEY (meta_id),
+		KEY rcp_membership_id (rcp_membership_id),
+		KEY meta_key (meta_key(191))
+	) {$charset_collate};";
+	dbDelta( $sql );
 }

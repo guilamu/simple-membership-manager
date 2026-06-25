@@ -143,21 +143,7 @@ function smm_render_level_form_fields( $level = null ) {
 				<p class="description"><?php _e( 'Set to 0 for lifetime membership.', 'rcp' ); ?></p>
 			</td>
 		</tr>
-		<tr>
-			<th scope="row"><label for="rcp-level-price"><?php _e( 'Price', 'rcp' ); ?></label></th>
-			<td>
-				<?php echo rcp_get_currency_symbol(); ?>
-				<input type="text" id="rcp-level-price" name="price" value="<?php echo $level ? esc_attr( $level->get_price() ) : '0'; ?>" style="width: 80px;"/>
-				<p class="description"><?php _e( 'Set to 0 for free membership.', 'rcp' ); ?></p>
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><label for="rcp-level-fee"><?php _e( 'Signup Fee', 'rcp' ); ?></label></th>
-			<td>
-				<?php echo rcp_get_currency_symbol(); ?>
-				<input type="text" id="rcp-level-fee" name="fee" value="<?php echo $level ? esc_attr( $level->get_fee() ) : '0'; ?>" style="width: 80px;"/>
-			</td>
-		</tr>
+
 		<tr>
 			<th scope="row"><label for="rcp-level-access"><?php _e( 'Access Level', 'rcp' ); ?></label></th>
 			<td>
@@ -250,8 +236,8 @@ function smm_process_add_level() {
 		'description'   => wp_kses_post( $_POST['description'] ),
 		'duration'      => absint( $_POST['duration'] ),
 		'duration_unit' => sanitize_text_field( $_POST['duration_unit'] ),
-		'price'         => sanitize_text_field( $_POST['price'] ),
-		'fee'           => sanitize_text_field( $_POST['fee'] ),
+		'price'         => '0',
+		'fee'           => '0',
 		'level'         => absint( $_POST['level'] ),
 		'role'          => sanitize_text_field( $_POST['role'] ),
 		'status'        => sanitize_text_field( $_POST['status'] ),
@@ -282,8 +268,8 @@ function smm_process_edit_level() {
 		'description'   => wp_kses_post( $_POST['description'] ),
 		'duration'      => absint( $_POST['duration'] ),
 		'duration_unit' => sanitize_text_field( $_POST['duration_unit'] ),
-		'price'         => sanitize_text_field( $_POST['price'] ),
-		'fee'           => sanitize_text_field( $_POST['fee'] ),
+		'price'         => '0',
+		'fee'           => '0',
 		'level'         => absint( $_POST['level'] ),
 		'role'          => sanitize_text_field( $_POST['role'] ),
 		'status'        => sanitize_text_field( $_POST['status'] ),
