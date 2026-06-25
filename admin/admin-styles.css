@@ -1,0 +1,31 @@
+.smm-notes {
+	background: #fff;
+	border: 1px solid #e5e5e5;
+	padding: 10px;
+	max-height: 300px;
+	overflow-y: auto;
+	font-size: 12px;
+	line-height: 1.6;
+}
+
+.rcp-metabox-field {
+	margin-bottom: 15px;
+}
+
+.rcp-subscription-levels {
+	max-height: 150px;
+	overflow-y: auto;
+	border: 1px solid #eee;
+	background: #fff;
+	padding: 5px;
+	margin-top: 10px;
+}
+
+.rcp-subscription-levels label {
+	display: block;
+	margin-bottom: 3px;
+}
+
+.smm-admin .wrap h1 a.page-title-action {
+	margin-left: 10px;
+}

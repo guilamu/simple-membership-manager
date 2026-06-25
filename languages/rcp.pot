@@ -1,0 +1,686 @@
+# Copyright (C) 2026 Simple Membership Manager
+# This file is distributed under the same license as the Simple Membership Manager plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Simple Membership Manager 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-24 12:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Simple Membership Manager\n"
+"X-Domain: rcp\n"
+
+#: includes/emails.php:410
+msgid "%s (%s) has cancelled their membership to %s"
+msgstr ""
+
+#: includes/emails.php:347
+#: includes/emails.php:368
+#: includes/emails.php:389
+msgid "%s (%s) is now a member of %s"
+msgstr ""
+
+#: admin/metabox-view.php:69
+msgid "%s and higher"
+msgstr ""
+
+#: admin/customers-page.php:35
+#: admin/members-page.php:58
+msgid "(no user)"
+msgstr ""
+
+#: admin/levels-page.php:156
+msgid "0 = lowest access, 10 = highest access."
+msgstr ""
+
+#: admin/levels-page.php:23
+#: admin/levels-page.php:149
+msgid "Access Level"
+msgstr ""
+
+#: admin/customers-page.php:140
+msgid "Actions"
+msgstr ""
+
+#: admin/customers-page.php:153
+#: admin/members-page.php:89
+msgid "Activate"
+msgstr ""
+
+#: admin/levels-page.php:174
+#: includes/functions-compat.php:891
+msgid "Active"
+msgstr ""
+
+#: admin/levels-page.php:197
+msgid "Add Level"
+msgstr ""
+
+#: admin/customers-page.php:164
+#: admin/members-page.php:197
+#: admin/members-page.php:212
+#: admin/members-page.php:285
+msgid "Add Membership"
+msgstr ""
+
+#: admin/levels-page.php:191
+msgid "Add Membership Level"
+msgstr ""
+
+#: admin/levels-page.php:97
+msgid "Add New"
+msgstr ""
+
+#: admin/members-page.php:369
+msgid "Add Note"
+msgstr ""
+
+#: admin/metabox-view.php:92
+msgid "Additional options"
+msgstr ""
+
+#: admin/members-page.php:155
+msgid "All"
+msgstr ""
+
+#: includes/functions-compat.php:91
+msgid "An unexpected error occurred while trying to add the membership level."
+msgstr ""
+
+#: includes/functions-compat.php:122
+msgid "An unexpected error occurred while trying to update the membership level."
+msgstr ""
+
+#: admin/members-page.php:359
+msgid "Are you sure you want to disable this membership?"
+msgstr ""
+
+#: admin/levels-page.php:36
+msgid "Are you sure?"
+msgstr ""
+
+#: admin/members-page.php:277
+#: admin/members-page.php:349
+msgid "Auto Renew:"
+msgstr ""
+
+#: admin/levels-page.php:198
+#: admin/levels-page.php:220
+#: admin/members-page.php:81
+msgid "Cancel"
+msgstr ""
+
+#: includes/functions-compat.php:894
+msgid "Cancelled"
+msgstr ""
+
+#: includes/emails.php:407
+msgid "Cancelled membership on %s"
+msgstr ""
+
+#: admin/members-page.php:28
+msgid "Created"
+msgstr ""
+
+#: admin/customers-page.php:105
+msgid "Customer"
+msgstr ""
+
+#: admin/customers-page.php:108
+msgid "Customer Details"
+msgstr ""
+
+#: admin/members-page.php:217
+msgid "Customer Email:"
+msgstr ""
+
+#: admin/members-page.php:306
+msgid "Customer:"
+msgstr ""
+
+#: admin/admin-pages.php:15
+#: admin/admin-pages.php:15
+#: admin/customers-page.php:86
+msgid "Customers"
+msgstr ""
+
+#: admin/members-page.php:266
+#: admin/members-page.php:338
+msgid "Date Created:"
+msgstr ""
+
+#: admin/customers-page.php:24
+msgid "Date Registered"
+msgstr ""
+
+#: admin/customers-page.php:117
+msgid "Date Registered:"
+msgstr ""
+
+#: includes/functions-compat.php:1029
+msgid "Day"
+msgstr ""
+
+#: admin/levels-page.php:126
+msgid "Day(s)"
+msgstr ""
+
+#: includes/functions-compat.php:1029
+msgid "Days"
+msgstr ""
+
+#: admin/levels-page.php:36
+msgid "Delete"
+msgstr ""
+
+#: admin/members-page.php:359
+msgid "Delete (Disable)"
+msgstr ""
+
+#: admin/levels-page.php:118
+msgid "Description"
+msgstr ""
+
+#: admin/levels-page.php:25
+#: admin/levels-page.php:122
+msgid "Duration"
+msgstr ""
+
+#: admin/customers-page.php:151
+#: admin/levels-page.php:35
+#: admin/members-page.php:78
+msgid "Edit"
+msgstr ""
+
+#: admin/members-page.php:301
+msgid "Edit Membership"
+msgstr ""
+
+#: admin/levels-page.php:212
+msgid "Edit Membership Level"
+msgstr ""
+
+#: admin/members-page.php:230
+msgid "Email of existing user"
+msgstr ""
+
+#: includes/class-smm-customer.php:170
+msgid "Email successfully verified."
+msgstr ""
+
+#: admin/customers-page.php:121
+msgid "Email Verification:"
+msgstr ""
+
+#: admin/members-page.php:231
+msgid "Enter the email of an existing user. A customer record will be created automatically."
+msgstr ""
+
+#: admin/members-page.php:455
+msgid "Error adding membership."
+msgstr ""
+
+#: admin/members-page.php:424
+msgid "Error creating user account."
+msgstr ""
+
+#: admin/members-page.php:436
+msgid "Error locating customer."
+msgstr ""
+
+#: admin/metabox-view.php:36
+msgid "Everyone"
+msgstr ""
+
+#: admin/customers-page.php:139
+#: admin/members-page.php:27
+msgid "Expiration"
+msgstr ""
+
+#: admin/members-page.php:270
+#: admin/members-page.php:342
+msgid "Expiration Date:"
+msgstr ""
+
+#: admin/members-page.php:84
+msgid "Expire"
+msgstr ""
+
+#: includes/functions-compat.php:895
+msgid "Expired"
+msgstr ""
+
+#: includes/emails.php:429
+msgid "Expired membership on %s"
+msgstr ""
+
+#: includes/functions-compat.php:896
+msgid "Free"
+msgstr ""
+
+#: includes/emails.php:101
+msgid "Hello"
+msgstr ""
+
+#: admin/customers-page.php:22
+#: admin/customers-page.php:136
+#: admin/members-page.php:23
+msgid "ID"
+msgstr ""
+
+#: admin/levels-page.php:175
+#: includes/functions-compat.php:892
+msgid "Inactive"
+msgstr ""
+
+#: admin/customers-page.php:98
+msgid "Invalid customer."
+msgstr ""
+
+#: admin/levels-page.php:208
+#: admin/levels-page.php:299
+msgid "Invalid level."
+msgstr ""
+
+#: admin/members-page.php:396
+#: includes/functions-compat.php:101
+msgid "Invalid membership level."
+msgstr ""
+
+#: admin/members-page.php:295
+#: admin/members-page.php:481
+#: admin/members-page.php:573
+#: admin/members-page.php:590
+#: admin/members-page.php:607
+msgid "Invalid membership."
+msgstr ""
+
+#: admin/customers-page.php:137
+#: admin/members-page.php:25
+msgid "Level"
+msgstr ""
+
+#: admin/levels-page.php:46
+msgid "Lifetime"
+msgstr ""
+
+#: admin/levels-page.php:180
+msgid "List Order"
+msgstr ""
+
+#: includes/functions-compat.php:1272
+#: includes/functions-compat.php:1272
+msgid "Manual"
+msgstr ""
+
+#: admin/metabox-view.php:32
+msgid "Member access options"
+msgstr ""
+
+#: includes/emails.php:181
+msgid "Member display name"
+msgstr ""
+
+#: includes/emails.php:178
+msgid "Member email"
+msgstr ""
+
+#: includes/emails.php:176
+msgid "Member first and last name"
+msgstr ""
+
+#: includes/emails.php:179
+msgid "Member first name"
+msgstr ""
+
+#: includes/emails.php:185
+msgid "Member ID"
+msgstr ""
+
+#: includes/emails.php:180
+msgid "Member last name"
+msgstr ""
+
+#: includes/emails.php:177
+msgid "Member username"
+msgstr ""
+
+#: admin/levels-page.php:27
+msgid "Members"
+msgstr ""
+
+#: admin/metabox-view.php:46
+msgid "Members of any membership level(s)"
+msgstr ""
+
+#: admin/metabox-view.php:50
+msgid "Members of any paid membership level(s)"
+msgstr ""
+
+#: admin/metabox-view.php:37
+msgid "Members of membership level(s)"
+msgstr ""
+
+#: admin/metabox-view.php:54
+msgid "Members of specific membership levels"
+msgstr ""
+
+#: admin/metabox-view.php:39
+msgid "Members with a certain role"
+msgstr ""
+
+#: admin/metabox-view.php:38
+msgid "Members with an access level"
+msgstr ""
+
+#: includes/class-smm-membership.php:498
+msgid "Membership activated."
+msgstr ""
+
+#: admin/members-page.php:609
+msgid "Membership cancelled via admin by %s."
+msgstr ""
+
+#: includes/class-smm-membership.php:477
+msgid "Membership disabled."
+msgstr ""
+
+#: admin/members-page.php:533
+msgid "Membership edited by %s."
+msgstr ""
+
+#: includes/emails.php:182
+msgid "Membership expiration date"
+msgstr ""
+
+#: includes/emails.php:183
+msgid "Membership level name"
+msgstr ""
+
+#: admin/members-page.php:236
+#: admin/members-page.php:312
+msgid "Membership Level:"
+msgstr ""
+
+#: includes/emails.php:348
+#: includes/emails.php:369
+#: includes/emails.php:390
+msgid "Membership level: %s"
+msgstr ""
+
+#: admin/admin-pages.php:16
+#: admin/admin-pages.php:16
+#: admin/levels-page.php:96
+msgid "Membership Levels"
+msgstr ""
+
+#: admin/members-page.php:462
+msgid "Membership manually created by %s."
+msgstr ""
+
+#: admin/members-page.php:253
+msgid "Membership Status:"
+msgstr ""
+
+#: admin/admin-pages.php:14
+#: admin/admin-pages.php:14
+#: admin/customers-page.php:25
+#: admin/customers-page.php:130
+#: admin/members-page.php:196
+msgid "Memberships"
+msgstr ""
+
+#: includes/functions-compat.php:1032
+msgid "Month"
+msgstr ""
+
+#: admin/levels-page.php:126
+msgid "Month(s)"
+msgstr ""
+
+#: includes/functions-compat.php:1032
+msgid "Months"
+msgstr ""
+
+#: admin/levels-page.php:22
+#: admin/levels-page.php:114
+msgid "Name"
+msgstr ""
+
+#: admin/customers-page.php:149
+#: admin/members-page.php:68
+msgid "Never"
+msgstr ""
+
+#: admin/members-page.php:273
+#: admin/members-page.php:345
+msgid "Never expires"
+msgstr ""
+
+#: includes/emails.php:365
+msgid "New free membership on %s"
+msgstr ""
+
+#: includes/emails.php:344
+msgid "New membership on %s"
+msgstr ""
+
+#: includes/emails.php:386
+msgid "New trial membership on %s"
+msgstr ""
+
+#: admin/members-page.php:247
+msgid "No levels found"
+msgstr ""
+
+#: admin/customers-page.php:161
+msgid "No memberships found."
+msgstr ""
+
+#: admin/levels-page.php:229
+#: admin/levels-page.php:260
+#: admin/levels-page.php:292
+#: admin/members-page.php:388
+#: admin/members-page.php:472
+#: admin/members-page.php:542
+#: admin/members-page.php:566
+#: admin/members-page.php:583
+#: admin/members-page.php:600
+msgid "Nonce verification failed."
+msgstr ""
+
+#: admin/customers-page.php:172
+#: admin/members-page.php:362
+msgid "Notes"
+msgstr ""
+
+#: includes/functions-compat.php:893
+msgid "Pending"
+msgstr ""
+
+#: admin/members-page.php:551
+msgid "Please enter a note."
+msgstr ""
+
+#: admin/members-page.php:404
+msgid "Please enter a valid customer email."
+msgstr ""
+
+#: admin/levels-page.php:134
+msgid "Price"
+msgstr ""
+
+#: admin/metabox-view.php:76
+msgid "Require member to have capabilities from this user role."
+msgstr ""
+
+#: admin/admin-pages.php:13
+#: admin/admin-pages.php:13
+msgid "Restrict"
+msgstr ""
+
+#: includes/content-restriction.php:225
+msgid "Restrict this content"
+msgstr ""
+
+#: admin/levels-page.php:26
+msgid "Role"
+msgstr ""
+
+#: admin/members-page.php:202
+msgid "Search"
+msgstr ""
+
+#: admin/metabox-view.php:33
+msgid "Select who should have access to this content."
+msgstr ""
+
+#: admin/levels-page.php:138
+msgid "Set to 0 for free membership."
+msgstr ""
+
+#: admin/levels-page.php:130
+msgid "Set to 0 for lifetime membership."
+msgstr ""
+
+#: admin/metabox-view.php:97
+msgid "Show excerpt to members without access to this content."
+msgstr ""
+
+#: admin/levels-page.php:142
+msgid "Signup Fee"
+msgstr ""
+
+#: includes/emails.php:186
+msgid "Site name"
+msgstr ""
+
+#: admin/customers-page.php:138
+#: admin/levels-page.php:24
+#: admin/levels-page.php:171
+#: admin/members-page.php:26
+msgid "Status"
+msgstr ""
+
+#: admin/members-page.php:325
+msgid "Status:"
+msgstr ""
+
+#: includes/emails.php:184
+msgid "Subscription key"
+msgstr ""
+
+#: includes/emails.php:349
+#: includes/emails.php:370
+#: includes/emails.php:391
+#: includes/emails.php:413
+#: includes/emails.php:434
+msgid "Thank you"
+msgstr ""
+
+#: includes/emails.php:411
+#: includes/emails.php:433
+msgid "Their membership level was: %s"
+msgstr ""
+
+#: includes/emails.php:412
+msgid "They will retain access until: %s"
+msgstr ""
+
+#: includes/functions-compat.php:771
+msgid "This content is restricted to subscribers"
+msgstr ""
+
+#: admin/levels-page.php:167
+msgid "This role is assigned to the user when their membership is activated."
+msgstr ""
+
+#: admin/levels-page.php:219
+msgid "Update Level"
+msgstr ""
+
+#: admin/members-page.php:358
+msgid "Update Membership"
+msgstr ""
+
+#: admin/customers-page.php:23
+#: admin/members-page.php:24
+msgid "User"
+msgstr ""
+
+#: admin/levels-page.php:160
+msgid "User Role"
+msgstr ""
+
+#: admin/customers-page.php:113
+msgid "User:"
+msgstr ""
+
+#: includes/functions-compat.php:1035
+msgid "Year"
+msgstr ""
+
+#: admin/levels-page.php:126
+msgid "Year(s)"
+msgstr ""
+
+#: includes/functions-compat.php:1035
+msgid "Years"
+msgstr ""
+
+#: admin/members-page.php:177
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: admin/customers-page.php:72
+#: admin/levels-page.php:77
+#: admin/levels-page.php:232
+#: admin/levels-page.php:263
+#: admin/levels-page.php:295
+#: admin/members-page.php:391
+#: admin/members-page.php:475
+#: admin/members-page.php:545
+#: admin/members-page.php:569
+#: admin/members-page.php:586
+#: admin/members-page.php:603
+msgid "You do not have permission."
+msgstr ""
+
+#: includes/emails.php:337
+#: includes/emails.php:358
+#: includes/emails.php:379
+msgid "Your %s membership has been activated"
+msgstr ""
+
+#: includes/emails.php:338
+#: includes/emails.php:359
+#: includes/emails.php:380
+msgid "Your %s membership has been activated."
+msgstr ""
+
+#: includes/emails.php:400
+msgid "Your %s membership has been cancelled"
+msgstr ""
+
+#: includes/emails.php:401
+msgid "Your %s membership has been cancelled. You will retain access to content until %s."
+msgstr ""
+
+#: includes/emails.php:422
+msgid "Your %s membership has expired"
+msgstr ""
+
+#: includes/emails.php:423
+msgid "Your %s membership has expired."
+msgstr ""
+
+#: includes/content-restriction.php:46
+msgid "Your account is pending email verification."
+msgstr ""
+
