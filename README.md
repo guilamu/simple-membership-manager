@@ -83,6 +83,9 @@ Yes, SMM implements the exact function compatibility stubs used by the `advanced
 
 ## Changelog
 
+### 1.0.3 - 2026-06-25
+- **Improved:** Upgraded default email layout to a modern, responsive, card-based HTML template with clean header, body, and footer sections.
+
 ### 1.0.2 - 2026-06-25
 - **New:** Real-time autocomplete user email search when adding a membership manually.
 - **New:** Client-side validation and styling on the add membership form to prevent crashes.

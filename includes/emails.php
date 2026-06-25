@@ -108,12 +108,62 @@ class RCP_Emails {
 		if ( false === $this->html ) {
 			return apply_filters( 'rcp_email_message', wp_strip_all_tags( $message ), $this );
 		}
-		$message = $this->text_to_html( $message );
-		$body  = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">';
-		$body .= '<div style="background: #f5f5f5; padding: 20px; text-align: center; border-bottom: 2px solid #ddd;"><h2>' . esc_html( $this->get_heading() ) . '</h2></div>';
-		$body .= '<div style="padding: 20px;">{email}</div>';
-		$body .= '<div style="background: #f5f5f5; padding: 10px; text-align: center; font-size: 12px; color: #999; border-top: 2px solid #ddd;"></div>';
+		$message   = $this->text_to_html( $message );
+		$site_name = get_bloginfo( 'name' );
+		$site_url  = home_url();
+
+		$body  = '<!DOCTYPE html>';
+		$body .= '<html lang="en">';
+		$body .= '<head>';
+		$body .= '<meta charset="utf-8">';
+		$body .= '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+		$body .= '<title>' . esc_html( $site_name ) . '</title>';
+		$body .= '<style type="text/css">';
+		$body .= 'a { color: #ce000c; }';
+		$body .= 'p { margin: 0 0 16px 0; }';
+		$body .= 'p:last-child { margin-bottom: 0; }';
+		$body .= '</style>';
+		$body .= '</head>';
+		$body .= '<body style="margin: 0; padding: 0; background-color: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif;">';
+
+		// Outer wrapper table
+		$body .= '<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f6f9;">';
+		$body .= '<tr><td style="padding: 40px 20px;" align="center">';
+
+		// Card table
+		$body .= '<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">';
+
+		// Header
+		$body .= '<tr>';
+		$body .= '<td style="background-color: #ce000c; border-radius: 8px 8px 0 0; padding: 32px 40px; text-align: center;">';
+		$body .= '<h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.3;">';
+		$body .= esc_html( $this->get_heading() );
+		$body .= '</h1>';
+		$body .= '</td>';
+		$body .= '</tr>';
+
+		// Body
+		$body .= '<tr>';
+		$body .= '<td style="background-color: #ffffff; padding: 40px; color: #374151; font-size: 16px; line-height: 1.7;">';
+		$body .= '{email}';
+		$body .= '</td>';
+		$body .= '</tr>';
+
+		// Footer
+		$body .= '<tr>';
+		$body .= '<td style="background-color: #f9fafb; border-top: 1px solid #e5e7eb; border-radius: 0 0 8px 8px; padding: 20px 40px; text-align: center;">';
+		$body .= '<p style="margin: 0 0 4px 0; color: #6b7280; font-size: 13px;">';
+		$body .= '&copy; ' . esc_html( date( 'Y' ) ) . ' <a href="' . esc_url( $site_url ) . '" style="color: #ce000c; text-decoration: none; font-weight: 500;">' . esc_html( $site_name ) . '</a>';
+		$body .= '</p>';
+		$body .= '<p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 12px;">You are receiving this email as a member of ' . esc_html( $site_name ) . '.</p>';
+		$body .= '</td>';
+		$body .= '</tr>';
+
+		$body .= '</table>'; // end card
+		$body .= '</td></tr>';
+		$body .= '</table>'; // end outer wrapper
 		$body .= '</body></html>';
+
 		$body = str_replace( '{email}', $message, $body );
 		return apply_filters( 'rcp_email_message', $body, $this );
 	}
