@@ -223,7 +223,23 @@ function smm_render_add_membership() {
 	?>
 	<div class="wrap">
 		<h1><?php _e( 'Add Membership', 'rcp' ); ?></h1>
-		<form method="POST" action="">
+		<?php
+		if ( ! empty( $_GET['smm_error'] ) ) :
+			$error_msg = '';
+			switch ( $_GET['smm_error'] ) {
+				case 'invalid_email':
+					$error_msg = __( 'Please enter a valid customer email address.', 'rcp' );
+					break;
+				case 'invalid_level':
+					$error_msg = __( 'Please select a valid membership level.', 'rcp' );
+					break;
+			}
+			if ( $error_msg ) : ?>
+				<div class="notice notice-error"><p><?php echo esc_html( $error_msg ); ?></p></div>
+			<?php endif;
+		endif;
+		?>
+		<form method="POST" action="" id="smm-add-membership-form">
 			<table class="widefat striped">
 				<tbody>
 				<tr>
@@ -240,7 +256,7 @@ function smm_render_add_membership() {
 								<?php
 							endif;
 						else : ?>
-							<input type="text" id="rcp-customer-email" name="user_email" placeholder="<?php esc_attr_e( 'Email of existing user', 'rcp' ); ?>" value="<?php echo ! empty( $_GET['email'] ) ? esc_attr( rawurldecode( $_GET['email'] ) ) : ''; ?>" class="regular-text" />
+							<input type="text" id="rcp-customer-email" name="user_email" placeholder="<?php esc_attr_e( 'Email of existing user', 'rcp' ); ?>" value="<?php echo ! empty( $_GET['email'] ) ? esc_attr( rawurldecode( $_GET['email'] ) ) : ''; ?>" class="regular-text" required />
 							<p class="description"><?php _e( 'Enter the email of an existing user. A customer record will be created automatically.', 'rcp' ); ?></p>
 						<?php endif; ?>
 					</td>
@@ -299,8 +315,101 @@ function smm_render_add_membership() {
 			</p>
 		</form>
 	</div>
+
+	<style>
+		/* jQuery UI Autocomplete dropdown */
+		.ui-autocomplete {
+			max-height: 250px;
+			overflow-y: auto;
+			overflow-x: hidden;
+			background: #fff;
+			border: 1px solid #dcdcde;
+			border-radius: 4px;
+			box-shadow: 0 2px 8px rgba(0,0,0,.12);
+			z-index: 100100;
+		}
+		.ui-menu-item-wrapper {
+			padding: 6px 12px;
+			cursor: pointer;
+		}
+		.ui-menu-item-wrapper.ui-state-active,
+		.ui-menu-item-wrapper:hover {
+			background: #2271b1;
+			color: #fff;
+		}
+		/* Validation error state */
+		.smm-field-error {
+			border-color: #d63638 !important;
+			box-shadow: 0 0 0 1px #d63638 !important;
+		}
+		.smm-error-message {
+			color: #d63638;
+			font-weight: 600;
+			margin-top: 4px;
+		}
+	</style>
+
+	<script>
+	jQuery(document).ready(function($) {
+		var $emailField = $('#rcp-customer-email');
+
+		/* ---- Autocomplete ---- */
+		if ($emailField.length && typeof smm_admin !== 'undefined') {
+			$emailField.autocomplete({
+				source: function(request, response) {
+					$.getJSON(smm_admin.ajax_url, {
+						action: 'smm_search_users',
+						nonce:  smm_admin.nonce,
+						term:   request.term
+					}, response);
+				},
+				minLength: 2,
+				select: function(event, ui) {
+					$emailField.val(ui.item.value);
+					// Clear any previous error state on selection.
+					$emailField.removeClass('smm-field-error');
+					$emailField.next('.smm-error-message').remove();
+					return false;
+				}
+			});
+		}
+
+		/* ---- Client-side validation ---- */
+		$('#smm-add-membership-form').on('submit', function(e) {
+			if (!$emailField.length) {
+				return; // Customer already set via customer_id.
+			}
+
+			var val = $.trim($emailField.val());
+			$emailField.removeClass('smm-field-error');
+			$emailField.next('.smm-error-message').remove();
+
+			if (!val) {
+				e.preventDefault();
+				$emailField.addClass('smm-field-error').focus();
+				$emailField.after('<p class="smm-error-message"><?php echo esc_js( __( 'Please enter a customer email address.', 'rcp' ) ); ?></p>');
+				return false;
+			}
+
+			// Basic email format check.
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+				e.preventDefault();
+				$emailField.addClass('smm-field-error').focus();
+				$emailField.after('<p class="smm-error-message"><?php echo esc_js( __( 'Please enter a valid email address.', 'rcp' ) ); ?></p>');
+				return false;
+			}
+		});
+
+		/* Clear error on typing */
+		$emailField.on('input', function() {
+			$(this).removeClass('smm-field-error');
+			$(this).next('.smm-error-message').remove();
+		});
+	});
+	</script>
 	<?php
 }
+
 
 function smm_render_edit_membership( $membership_id ) {
 	$membership = rcp_get_membership( $membership_id );
@@ -406,7 +515,8 @@ function smm_process_add_membership() {
 
 	$membership_level = rcp_get_membership_level( absint( $_POST['object_id'] ) );
 	if ( ! $membership_level instanceof \RCP\Membership_Level ) {
-		wp_die( __( 'Invalid membership level.', 'rcp' ) );
+		wp_safe_redirect( rcp_get_memberships_admin_page( array( 'view' => 'add', 'smm_error' => 'invalid_level' ) ) );
+		exit;
 	}
 
 	if ( ! empty( $_POST['customer_id'] ) ) {
@@ -414,7 +524,8 @@ function smm_process_add_membership() {
 	} else {
 		$customer_email = ! empty( $_POST['user_email'] ) ? sanitize_email( $_POST['user_email'] ) : false;
 		if ( empty( $customer_email ) ) {
-			wp_die( __( 'Please enter a valid customer email.', 'rcp' ) );
+			wp_safe_redirect( rcp_get_memberships_admin_page( array( 'view' => 'add', 'smm_error' => 'invalid_email' ) ) );
+			exit;
 		}
 		$user = get_user_by( 'email', $customer_email );
 		if ( empty( $user ) ) {

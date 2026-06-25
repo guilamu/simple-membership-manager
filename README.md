@@ -83,6 +83,12 @@ Yes, SMM implements the exact function compatibility stubs used by the `advanced
 
 ## Changelog
 
+### 1.0.2 - 2026-06-25
+- **New:** Real-time autocomplete user email search when adding a membership manually.
+- **New:** Client-side validation and styling on the add membership form to prevent crashes.
+- **New:** Graceful server-side validation error redirects to avoid blank error pages.
+- **Removed:** Price and Signup Fee options on membership levels page as payments are not processed.
+
 ### 1.0.1 - 2026-06-25
 - Initial release
 - Drop-in compatibility for Restrict Content Pro database tables

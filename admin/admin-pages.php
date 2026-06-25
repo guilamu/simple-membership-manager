@@ -22,6 +22,15 @@ function smm_enqueue_admin_styles( $hook ) {
 		return;
 	}
 	wp_enqueue_style( 'smm-admin', SMM_PLUGIN_URL . 'admin/admin-styles.css', array(), SMM_VERSION );
+
+	// jQuery UI Autocomplete is bundled with WordPress.
+	wp_enqueue_script( 'jquery-ui-autocomplete' );
+
+	// Pass AJAX params for user search autocomplete.
+	wp_localize_script( 'jquery-ui-autocomplete', 'smm_admin', array(
+		'ajax_url' => admin_url( 'admin-ajax.php' ),
+		'nonce'    => wp_create_nonce( 'smm_search_users' ),
+	) );
 }
 add_action( 'admin_enqueue_scripts', 'smm_enqueue_admin_styles' );
 
@@ -113,3 +122,41 @@ function smm_users_column_content( $output, $column_name, $user_id ) {
 	);
 }
 add_filter( 'manage_users_custom_column', 'smm_users_column_content', 10, 3 );
+
+/* --------------------------------------------------------------------- *
+ * AJAX: search users by email (for autocomplete on Add Membership form)
+ * --------------------------------------------------------------------- */
+
+/**
+ * Return a JSON list of user emails matching the search term.
+ */
+function smm_ajax_search_users() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( 'Unauthorized', 403 );
+	}
+
+	check_ajax_referer( 'smm_search_users', 'nonce' );
+
+	$term = isset( $_GET['term'] ) ? sanitize_text_field( wp_unslash( $_GET['term'] ) ) : '';
+	if ( strlen( $term ) < 2 ) {
+		wp_send_json( array() );
+	}
+
+	$user_query = new WP_User_Query( array(
+		'search'         => '*' . $term . '*',
+		'search_columns' => array( 'user_email', 'display_name', 'user_login' ),
+		'number'         => 10,
+		'orderby'        => 'display_name',
+	) );
+
+	$results = array();
+	foreach ( $user_query->get_results() as $user ) {
+		$results[] = array(
+			'label' => sprintf( '%s (%s)', $user->display_name, $user->user_email ),
+			'value' => $user->user_email,
+		);
+	}
+
+	wp_send_json( $results );
+}
+add_action( 'wp_ajax_smm_search_users', 'smm_ajax_search_users' );
