@@ -45,10 +45,6 @@ if ( empty( $sub_levels ) && empty( $set_level ) ) {
 		<input type="radio" name="rcp_subscription_level_any_set" id="rcp_subscription_level_any" value="any"<?php checked( 'any', $set_level ); echo $disabled; ?>/>
 		&nbsp;<?php _e( 'Members of any membership level(s)', 'rcp' ); ?><br/>
 	</label>
-	<label for="rcp_subscription_level_any_paid">
-		<input type="radio" name="rcp_subscription_level_any_set" id="rcp_subscription_level_any_paid" value="any-paid"<?php checked( true, $set_level == 'any-paid' || ( ! empty( $is_paid ) && 'any' !== $sub_levels ) ); echo $disabled; ?>/>
-		&nbsp;<?php _e( 'Members of any paid membership level(s)', 'rcp' ); ?><br/>
-	</label>
 	<label for="rcp_subscription_level_specific">
 		<input type="radio" name="rcp_subscription_level_any_set" id="rcp_subscription_level_specific" value="specific"<?php checked( true, is_array( $sub_levels ) ); echo $disabled; ?>/>
 		&nbsp;<?php _e( 'Members of specific membership levels', 'rcp' ); ?><br/>

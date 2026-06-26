@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Simple Membership Manager
  * Description: Lightweight, zero-dependency drop-in replacement for Restrict Content Pro. Compatible with the same database tables and the advanced-menu-items-visibility-control plugin.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Guilamu
  * Author URI: https://github.com/guilamu
  * Text Domain: smm
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'SMM_PLUGIN_FILE', __FILE__ );
 define( 'SMM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SMM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'SMM_VERSION', '1.0.3' );
+define( 'SMM_VERSION', '1.0.4' );
 
 if ( ! defined( 'RCP_PLUGIN_VERSION' ) ) {
 	define( 'RCP_PLUGIN_VERSION', '3.5.58.1' );

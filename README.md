@@ -56,6 +56,7 @@ Yes, SMM implements the exact function compatibility stubs used by the `advanced
 ## Project Structure
 ```
 .
+├── LICENSE                            # GNU GPL-3.0 License
 ├── simple-membership-manager.php      # Main plugin file & bootstrap
 ├── uninstall.php                      # Cleanup on uninstall
 ├── README.md                          # Documentation and help text
@@ -77,11 +78,16 @@ Yes, SMM implements the exact function compatibility stubs used by the `advanced
 │   ├── metabox-view.php               # Restriction metabox HTML layout
 │   └── admin-styles.css               # Admin stylesheet overrides
 └── languages
-    ├── index.php                      # Silence is golden
+    ├── rcp-fr_FR.po                   # French translation source file
+    ├── rcp-fr_FR.mo                   # Compiled French translation file
     └── rcp.pot                        # Translation template file
 ```
 
 ## Changelog
+
+### 1.0.4 - 2026-06-26
+- **Removed:** The "Members of any paid membership level(s)" option from the subscription restriction metabox (`rcp_subscription_level_any_paid`).
+- **Removed:** All `index.php` files.
 
 ### 1.0.3 - 2026-06-25
 - **Improved:** Upgraded default email layout to a modern, responsive, card-based HTML template with clean header, body, and footer sections.
