@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Simple Membership Manager plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Simple Membership Manager 1.0.4\n"
+"Project-Id-Version: Simple Membership Manager 1.0.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-24 12:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -87,6 +87,10 @@ msgstr ""
 
 #: admin/members-page.php:155
 msgid "All"
+msgstr ""
+
+#: admin/members-page.php:215
+msgid "All levels"
 msgstr ""
 
 #: includes/functions-compat.php:91
@@ -258,6 +262,14 @@ msgstr ""
 
 #: includes/emails.php:429
 msgid "Expired membership on %s"
+msgstr ""
+
+#: admin/members-page.php:220
+msgid "Filter"
+msgstr ""
+
+#: admin/members-page.php:213
+msgid "Filter by level"
 msgstr ""
 
 #: includes/functions-compat.php:896

@@ -125,6 +125,10 @@ class SMM_Memberships_Table extends WP_List_Table {
 			$args['customer_id'] = absint( $_GET['customer_id'] );
 		}
 
+		if ( ! empty( $_GET['level'] ) ) {
+			$args['object_id'] = absint( $_GET['level'] );
+		}
+
 		$search = isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '';
 		if ( ! empty( $search ) ) {
 			global $wpdb;
@@ -159,22 +163,31 @@ class SMM_Memberships_Table extends WP_List_Table {
 	protected function get_views() {
 		$views = array();
 		$current = isset( $_GET['status'] ) ? sanitize_text_field( $_GET['status'] ) : 'all';
+		$level   = ! empty( $_GET['level'] ) ? absint( $_GET['level'] ) : 0;
 
-		$all_count = rcp_count_memberships( array( 'disabled' => 0 ) );
+		// Preserve the active level filter when switching between status views.
+		$level_arg = $level ? array( 'level' => $level ) : array();
+
+		$count_args = array( 'disabled' => 0 );
+		if ( $level ) {
+			$count_args['object_id'] = $level;
+		}
+
+		$all_count = rcp_count_memberships( $count_args );
 		$views['all'] = sprintf(
 			'<a href="%s"%s>%s (%d)</a>',
-			esc_url( rcp_get_memberships_admin_page() ),
+			esc_url( rcp_get_memberships_admin_page( $level_arg ) ),
 			'all' === $current ? ' class="current"' : '',
 			__( 'All', 'rcp' ),
 			$all_count
 		);
 
 		foreach ( array( 'active', 'expired', 'cancelled', 'pending' ) as $status ) {
-			$count = rcp_count_memberships( array( 'status' => $status, 'disabled' => 0 ) );
+			$count = rcp_count_memberships( array_merge( $count_args, array( 'status' => $status ) ) );
 			if ( $count > 0 ) {
 				$views[ $status ] = sprintf(
 					'<a href="%s"%s>%s (%d)</a>',
-					esc_url( rcp_get_memberships_admin_page( array( 'status' => $status ) ) ),
+					esc_url( rcp_get_memberships_admin_page( array_merge( $level_arg, array( 'status' => $status ) ) ) ),
 					$current === $status ? ' class="current"' : '',
 					rcp_get_status_label( $status ),
 					$count
@@ -182,6 +195,31 @@ class SMM_Memberships_Table extends WP_List_Table {
 			}
 		}
 		return $views;
+	}
+
+	protected function extra_tablenav( $which ) {
+		if ( 'top' !== $which ) {
+			return;
+		}
+
+		$levels = rcp_get_membership_levels( array( 'number' => 999 ) );
+		if ( empty( $levels ) ) {
+			return;
+		}
+
+		$current = ! empty( $_GET['level'] ) ? absint( $_GET['level'] ) : 0;
+		?>
+		<div class="alignleft actions">
+			<label for="rcp-filter-level" class="screen-reader-text"><?php _e( 'Filter by level', 'rcp' ); ?></label>
+			<select name="level" id="rcp-filter-level">
+				<option value="0"><?php _e( 'All levels', 'rcp' ); ?></option>
+				<?php foreach ( $levels as $level ) : ?>
+					<option value="<?php echo esc_attr( $level->get_id() ); ?>" <?php selected( $current, $level->get_id() ); ?>><?php echo esc_html( $level->get_name() ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php submit_button( __( 'Filter', 'rcp' ), '', 'filter_action', false ); ?>
+		</div>
+		<?php
 	}
 }
 
@@ -211,6 +249,9 @@ function rcp_members_page() {
 		</h1>
 		<form method="get">
 			<input type="hidden" name="page" value="rcp-members" />
+			<?php if ( ! empty( $_GET['status'] ) ) : ?>
+				<input type="hidden" name="status" value="<?php echo esc_attr( sanitize_text_field( $_GET['status'] ) ); ?>" />
+			<?php endif; ?>
 			<?php $table->views(); ?>
 			<?php $table->search_box( __( 'Search', 'rcp' ), 'rcp-membership-search' ); ?>
 			<?php $table->display(); ?>

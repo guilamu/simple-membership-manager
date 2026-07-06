@@ -85,6 +85,9 @@ Yes, SMM implements the exact function compatibility stubs used by the `advanced
 
 ## Changelog
 
+### 1.0.5 - 2026-07-06
+- **New:** Membership level filter dropdown on the Memberships admin page to filter the list by subscription level. The filter combines with the status views and search, and is preserved when switching between status views.
+
 ### 1.0.4 - 2026-06-26
 - **Removed:** The "Members of any paid membership level(s)" option from the subscription restriction metabox (`rcp_subscription_level_any_paid`).
 - **Removed:** All `index.php` files.
