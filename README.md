@@ -85,6 +85,13 @@ Yes, SMM implements the exact function compatibility stubs used by the `advanced
 
 ## Changelog
 
+### 1.0.6 - 2026-08-26
+- **Improved:** Activation emails (paid, free, and trial) now name the membership level instead of the site in their subject line, e.g. `Your "Level name" access on Site name has been activated`.
+- **Improved:** Activation emails use a dedicated `ACCESS ACTIVATED` header instead of the generic greeting. Other notification emails keep the greeting from the email header setting.
+- **Improved:** Activation email body wording aligned with the new subject: `Your "Level name" access has been activated.`
+- **Fixed:** The email footer sentence ("You are receiving this email as a member of…") was hardcoded in English and is now translatable.
+- **Translations:** Four new strings added to `rcp.pot` and translated in `rcp-fr_FR.po` / `.mo`.
+
 ### 1.0.5 - 2026-07-06
 - **New:** Membership level filter dropdown on the Memberships admin page to filter the list by subscription level. The filter combines with the status views and search, and is preserved when switching between status views.
 

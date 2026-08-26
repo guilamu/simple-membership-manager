@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Simple Membership Manager plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Simple Membership Manager 1.0.5\n"
+"Project-Id-Version: Simple Membership Manager 1.0.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-24 12:00+0200\n"
 "PO-Revision-Date: 2026-07-06 12:53+0200\n"
@@ -637,3 +637,19 @@ msgstr "Votre adhésion %s a expiré."
 #: includes/content-restriction.php:46
 msgid "Your account is pending email verification."
 msgstr "Votre compte est en attente de vérification d'e-mail."
+
+#: includes/emails.php
+msgid "ACCESS ACTIVATED"
+msgstr "ACCÈS ACTIVÉ"
+
+#: includes/emails.php
+msgid "You are receiving this email as a member of %s."
+msgstr "Vous recevez cet e-mail en tant que membre de %s."
+
+#: includes/emails.php
+msgid "Your \"%1$s\" access on %2$s has been activated"
+msgstr "Votre accès \"%1$s\" sur le site de la %2$s a été activé"
+
+#: includes/emails.php
+msgid "Your \"%s\" access has been activated."
+msgstr "Votre accès \"%s\" a été activé."

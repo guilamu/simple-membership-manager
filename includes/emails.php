@@ -155,7 +155,7 @@ class RCP_Emails {
 		$body .= '<p style="margin: 0 0 4px 0; color: #6b7280; font-size: 13px;">';
 		$body .= '&copy; ' . esc_html( date( 'Y' ) ) . ' <a href="' . esc_url( $site_url ) . '" style="color: #ce000c; text-decoration: none; font-weight: 500;">' . esc_html( $site_name ) . '</a>';
 		$body .= '</p>';
-		$body .= '<p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 12px;">You are receiving this email as a member of ' . esc_html( $site_name ) . '.</p>';
+		$body .= '<p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 12px;">' . esc_html( sprintf( __( 'You are receiving this email as a member of %s.', 'rcp' ), $site_name ) ) . '</p>';
 		$body .= '</td>';
 		$body .= '</tr>';
 
@@ -384,11 +384,13 @@ function rcp_send_membership_email( $membership_id_or_object, $status = '' ) {
 			if ( ! empty( $rcp_options['disable_active_email'] ) ) {
 				break;
 			}
-			$subject = ! empty( $rcp_options['active_subject'] ) ? $rcp_options['active_subject'] : sprintf( __( 'Your %s membership has been activated', 'rcp' ), $site_name );
-			$message = ! empty( $rcp_options['active_email'] ) ? $rcp_options['active_email'] : sprintf( __( 'Your %s membership has been activated.', 'rcp' ), '%subscription_name%' );
+			$subject = ! empty( $rcp_options['active_subject'] ) ? $rcp_options['active_subject'] : sprintf( __( 'Your "%1$s" access on %2$s has been activated', 'rcp' ), '%subscription_name%', $site_name );
+			$message = ! empty( $rcp_options['active_email'] ) ? $rcp_options['active_email'] : sprintf( __( 'Your "%s" access has been activated.', 'rcp' ), '%subscription_name%' );
 
 			$subject        = apply_filters( 'rcp_subscription_active_subject', $subject, $user_id );
 			$message        = apply_filters( 'rcp_subscription_active_email', $message, $user_id );
+
+			$emails->heading = __( 'ACCESS ACTIVATED', 'rcp' );
 
 			if ( empty( $rcp_options['disable_new_user_notices'] ) ) {
 				$admin_subject = ! empty( $rcp_options['active_subject_admin'] ) ? $rcp_options['active_subject_admin'] : sprintf( __( 'New membership on %s', 'rcp' ), $site_name );
@@ -405,11 +407,13 @@ function rcp_send_membership_email( $membership_id_or_object, $status = '' ) {
 			if ( ! empty( $rcp_options['disable_free_email'] ) ) {
 				break;
 			}
-			$subject = ! empty( $rcp_options['free_subject'] ) ? $rcp_options['free_subject'] : sprintf( __( 'Your %s membership has been activated', 'rcp' ), $site_name );
-			$message = ! empty( $rcp_options['free_email'] ) ? $rcp_options['free_email'] : sprintf( __( 'Your %s membership has been activated.', 'rcp' ), '%subscription_name%' );
+			$subject = ! empty( $rcp_options['free_subject'] ) ? $rcp_options['free_subject'] : sprintf( __( 'Your "%1$s" access on %2$s has been activated', 'rcp' ), '%subscription_name%', $site_name );
+			$message = ! empty( $rcp_options['free_email'] ) ? $rcp_options['free_email'] : sprintf( __( 'Your "%s" access has been activated.', 'rcp' ), '%subscription_name%' );
 
 			$subject = apply_filters( 'rcp_subscription_free_subject', $subject, $user_id );
 			$message = apply_filters( 'rcp_subscription_free_email', $message, $user_id );
+
+			$emails->heading = __( 'ACCESS ACTIVATED', 'rcp' );
 
 			if ( empty( $rcp_options['disable_new_user_notices'] ) ) {
 				$admin_subject = ! empty( $rcp_options['free_subject_admin'] ) ? $rcp_options['free_subject_admin'] : sprintf( __( 'New free membership on %s', 'rcp' ), $site_name );
@@ -426,11 +430,13 @@ function rcp_send_membership_email( $membership_id_or_object, $status = '' ) {
 			if ( ! empty( $rcp_options['disable_trial_email'] ) ) {
 				break;
 			}
-			$subject = ! empty( $rcp_options['trial_subject'] ) ? $rcp_options['trial_subject'] : sprintf( __( 'Your %s membership has been activated', 'rcp' ), $site_name );
-			$message = ! empty( $rcp_options['trial_email'] ) ? $rcp_options['trial_email'] : sprintf( __( 'Your %s membership has been activated.', 'rcp' ), '%subscription_name%' );
+			$subject = ! empty( $rcp_options['trial_subject'] ) ? $rcp_options['trial_subject'] : sprintf( __( 'Your "%1$s" access on %2$s has been activated', 'rcp' ), '%subscription_name%', $site_name );
+			$message = ! empty( $rcp_options['trial_email'] ) ? $rcp_options['trial_email'] : sprintf( __( 'Your "%s" access has been activated.', 'rcp' ), '%subscription_name%' );
 
 			$subject = apply_filters( 'rcp_subscription_trial_subject', $subject, $user_id );
 			$message = apply_filters( 'rcp_subscription_trial_email', $message, $user_id );
+
+			$emails->heading = __( 'ACCESS ACTIVATED', 'rcp' );
 
 			if ( empty( $rcp_options['disable_new_user_notices'] ) ) {
 				$admin_subject = ! empty( $rcp_options['trial_subject_admin'] ) ? $rcp_options['trial_subject_admin'] : sprintf( __( 'New trial membership on %s', 'rcp' ), $site_name );
