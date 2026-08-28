@@ -130,8 +130,48 @@ class SMM_GitHub_Updater {
 	public static function init(): void {
 		add_filter( 'update_plugins_github.com', array( self::class, 'check_for_update' ), 10, 4 );
 		add_filter( 'plugins_api', array( self::class, 'plugin_info' ), 20, 3 );
+		add_filter( 'plugins_api_result', array( self::class, 'finalize_plugin_info' ), PHP_INT_MAX, 3 );
 		add_filter( 'upgrader_source_selection', array( self::class, 'fix_folder_name' ), 10, 4 );
 		add_action( 'admin_head', array( self::class, 'plugin_info_css' ) );
+	}
+
+	/**
+	 * Get the active plugin file path relative to the plugins directory.
+	 *
+	 * @return string
+	 */
+	private static function get_plugin_file(): string {
+		if ( defined( 'SMM_PLUGIN_FILE' ) ) {
+			$basename = plugin_basename( SMM_PLUGIN_FILE );
+			if ( is_string( $basename ) && '' !== $basename ) {
+				return $basename;
+			}
+		}
+
+		return self::PLUGIN_FILE;
+	}
+
+	/**
+	 * Get the active plugin directory relative to the plugins directory.
+	 *
+	 * @return string
+	 */
+	private static function get_plugin_directory(): string {
+		return dirname( self::get_plugin_file() );
+	}
+
+	/**
+	 * Check whether the current API request is asking for this plugin.
+	 *
+	 * @param string $action Requested action.
+	 * @param mixed  $args   API arguments.
+	 * @return bool
+	 */
+	private static function is_plugin_information_api_request( $action, $args ): bool {
+		return 'plugin_information' === $action
+			&& is_object( $args )
+			&& isset( $args->slug )
+			&& self::PLUGIN_SLUG === $args->slug;
 	}
 
 	/**
@@ -250,7 +290,7 @@ class SMM_GitHub_Updater {
 	 */
 	public static function check_for_update( $update, array $plugin_data, string $plugin_file, $locales ) {
 		// Verify this is our plugin
-		if ( self::PLUGIN_FILE !== $plugin_file ) {
+		if ( self::get_plugin_file() !== $plugin_file ) {
 			return $update;
 		}
 
@@ -271,7 +311,7 @@ class SMM_GitHub_Updater {
 		return array(
 			'id'            => 'github.com/' . self::GITHUB_USER . '/' . self::GITHUB_REPO,
 			'slug'          => self::PLUGIN_SLUG,
-			'plugin'        => self::PLUGIN_FILE,
+			'plugin'        => self::get_plugin_file(),
 			'new_version'   => $new_version,
 			'version'       => $new_version,
 			'package'       => self::get_package_url( $release_data ),
@@ -285,49 +325,93 @@ class SMM_GitHub_Updater {
 	}
 
 	/**
-	 * Provide plugin information for the WordPress plugin details popup.
+	 * Rebuild the final plugin information object after all earlier filters.
+	 *
+	 * Some plugins incorrectly return false from their own 'plugins_api' filter
+	 * when the slug is not theirs, discarding the object we built. Rebuilding a
+	 * fresh object on 'plugins_api_result' guarantees the modal always renders,
+	 * even when another filter corrupted or replaced our result (which is what
+	 * made WordPress fall back to wordpress.org and show "Plugin not found.").
+	 *
+	 * @param false|object|array $result Plugin API result.
+	 * @param string             $action Requested action.
+	 * @param object             $args   API arguments.
+	 * @return false|object|array
+	 */
+	public static function finalize_plugin_info( $result, $action, $args ) {
+		if ( ! self::is_plugin_information_api_request( $action, $args ) ) {
+			return $result;
+		}
+
+		return self::get_safe_plugin_info_result();
+	}
+
+	/**
+	 * Build the plugin information object once and return a fresh clone.
+	 *
+	 * @return stdClass
+	 */
+	private static function get_safe_plugin_info_result(): stdClass {
+		static $plugin_info = null;
+
+		if ( $plugin_info instanceof stdClass ) {
+			return clone $plugin_info;
+		}
+
+		try {
+			$plugin_info = self::build_plugin_info_result();
+		} catch ( \Throwable $throwable ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( sprintf(
+					'%s plugin details fallback: %s in %s:%d',
+					self::PLUGIN_NAME,
+					$throwable->getMessage(),
+					$throwable->getFile(),
+					$throwable->getLine()
+				) );
+			}
+
+			$plugin_info = self::build_fallback_plugin_info_result();
+		}
+
+		return clone $plugin_info;
+	}
+
+	/**
+	 * Build plugin information for the WordPress details modal.
 	 *
 	 * Reads sections (description, installation, FAQ, changelog) from the
 	 * local README.md. When an update is available, the GitHub release body
 	 * is prepended to the changelog so users see what's new before updating.
 	 *
-	 * @param false|object|array $res    The result object or array.
-	 * @param string             $action The type of information being requested.
-	 * @param object             $args   Plugin API arguments.
-	 * @return false|object Plugin information or false.
+	 * @return stdClass
 	 */
-	public static function plugin_info( $res, $action, $args ) {
-		if ( 'plugin_information' !== $action ) {
-			return $res;
-		}
-
-		if ( ! isset( $args->slug ) || self::PLUGIN_SLUG !== $args->slug ) {
-			return $res;
-		}
-
-		$plugin_file       = WP_PLUGIN_DIR . '/' . self::PLUGIN_FILE;
-		$plugin_data       = get_plugin_data( $plugin_file, false, false );
+	private static function build_plugin_info_result(): stdClass {
 		$release_data      = self::get_release_data();
-		$installed_version = $plugin_data['Version'] ?? '1.0.0';
+		$installed_version = defined( 'SMM_VERSION' ) ? SMM_VERSION : '1.0.0';
 		$release_version   = ( $release_data && ! empty( $release_data['tag_name'] ) )
 			? ltrim( $release_data['tag_name'], 'v' )
 			: '';
 		$version           = $installed_version;
+		$has_update        = '' !== $release_version && version_compare( $release_version, $installed_version, '>' );
 
-		if ( $release_version !== '' && version_compare( $release_version, $installed_version, '>' ) ) {
+		if ( $has_update ) {
 			$version = $release_version;
 		}
 
 		$res               = new stdClass();
 		$res->name         = self::PLUGIN_NAME;
 		$res->slug         = self::PLUGIN_SLUG;
-		$res->plugin       = self::PLUGIN_FILE; // CRITICAL for install status detection
+		$res->plugin       = self::get_plugin_file(); // CRITICAL for install status detection
 		$res->version      = $version;
 		$res->author       = sprintf( '<a href="https://github.com/%s">%s</a>', self::GITHUB_USER, self::GITHUB_USER );
 		$res->homepage     = sprintf( 'https://github.com/%s/%s', self::GITHUB_USER, self::GITHUB_REPO );
 		$res->requires     = self::REQUIRES_WP;
 		$res->tested       = get_bloginfo( 'version' );
 		$res->requires_php = self::REQUIRES_PHP;
+		$res->external     = true;
+		$res->banners      = array();
+		$res->icons        = array();
 
 		$download_link = self::get_plugin_info_download_link( $release_data );
 
@@ -336,31 +420,44 @@ class SMM_GitHub_Updater {
 		}
 
 		if ( $release_data && ! empty( $release_data['published_at'] ) ) {
-			$res->last_updated  = $release_data['published_at'] ?? '';
+			$res->last_updated = $release_data['published_at'];
 		}
 
-		// Build sections from local README.md.
+		$res->sections = self::build_plugin_info_sections( $release_data, $installed_version, $version );
+
+		return $res;
+	}
+
+	/**
+	 * Build plugin information sections from parsed README content.
+	 *
+	 * @param array|null $release_data      Release data from GitHub.
+	 * @param string     $installed_version Installed plugin version.
+	 * @param string     $display_version   Version shown in the modal.
+	 * @return array
+	 */
+	private static function build_plugin_info_sections( ?array $release_data, string $installed_version, string $display_version ): array {
 		$readme = self::parse_readme();
 
-		$res->sections = array(
-			'description'  => ! empty( $readme['description'] )
+		$sections = array(
+			'description' => ! empty( $readme['description'] )
 				? $readme['description']
 				: '<p>' . esc_html( self::PLUGIN_DESCRIPTION ) . '</p>',
 		);
 
 		if ( ! empty( $readme['installation'] ) ) {
-			$res->sections['installation'] = $readme['installation'];
+			$sections['installation'] = $readme['installation'];
 		}
 
 		if ( ! empty( $readme['faq'] ) ) {
-			$res->sections['faq'] = $readme['faq'];
+			$sections['faq'] = $readme['faq'];
 		}
 
 		// When an update is available, prepend the GitHub release body to the changelog.
 		$changelog_html = '';
 
-		if ( $release_data && ! empty( $release_data['body'] ) && version_compare( $installed_version, $version, '<' ) ) {
-			$changelog_html .= '<h4>' . esc_html( $version ) . '</h4>'
+		if ( is_array( $release_data ) && ! empty( $release_data['body'] ) && version_compare( $installed_version, $display_version, '<' ) ) {
+			$changelog_html .= '<h4>' . esc_html( $display_version ) . '</h4>'
 							 . self::markdown_to_html( $release_data['body'] );
 		}
 
@@ -368,7 +465,7 @@ class SMM_GitHub_Updater {
 			$changelog_html .= $readme['changelog'];
 		}
 
-		$res->sections['changelog'] = ! empty( $changelog_html )
+		$sections['changelog'] = ! empty( $changelog_html )
 			? $changelog_html
 			: sprintf(
 				'<p>See <a href="https://github.com/%s/%s/releases" target="_blank">GitHub releases</a> for changelog.</p>',
@@ -376,7 +473,61 @@ class SMM_GitHub_Updater {
 				esc_attr( self::GITHUB_REPO )
 			);
 
+		return $sections;
+	}
+
+	/**
+	 * Build a small fallback payload if plugin details generation fails.
+	 *
+	 * @return stdClass
+	 */
+	private static function build_fallback_plugin_info_result(): stdClass {
+		$res               = new stdClass();
+		$res->name         = self::PLUGIN_NAME;
+		$res->slug         = self::PLUGIN_SLUG;
+		$res->plugin       = self::get_plugin_file();
+		$res->version      = defined( 'SMM_VERSION' ) ? SMM_VERSION : '1.0.0';
+		$res->author       = sprintf( '<a href="https://github.com/%s">%s</a>', self::GITHUB_USER, self::GITHUB_USER );
+		$res->homepage     = sprintf( 'https://github.com/%s/%s', self::GITHUB_USER, self::GITHUB_REPO );
+		$res->requires     = self::REQUIRES_WP;
+		$res->tested       = get_bloginfo( 'version' );
+		$res->requires_php = self::REQUIRES_PHP;
+		$res->external     = true;
+		$res->banners      = array();
+		$res->icons        = array();
+
+		$download_link = self::get_plugin_info_download_link();
+
+		if ( '' !== $download_link ) {
+			$res->download_link = $download_link;
+		}
+
+		$res->sections = array(
+			'description' => '<p>' . esc_html( self::PLUGIN_DESCRIPTION ) . '</p>',
+			'changelog'   => sprintf(
+				'<p>See <a href="https://github.com/%s/%s/releases" target="_blank">GitHub releases</a> for changelog.</p>',
+				esc_attr( self::GITHUB_USER ),
+				esc_attr( self::GITHUB_REPO )
+			),
+		);
+
 		return $res;
+	}
+
+	/**
+	 * Provide plugin information for the WordPress plugin details popup.
+	 *
+	 * @param false|object|array $res    The result object or array.
+	 * @param string             $action The type of information being requested.
+	 * @param object             $args   Plugin API arguments.
+	 * @return false|object Plugin information or false.
+	 */
+	public static function plugin_info( $res, $action, $args ) {
+		if ( ! self::is_plugin_information_api_request( $action, $args ) ) {
+			return $res;
+		}
+
+		return self::get_safe_plugin_info_result();
 	}
 
 	/**
@@ -454,7 +605,7 @@ class SMM_GitHub_Updater {
 	 * @return array{description: string, installation: string, faq: string, changelog: string}
 	 */
 	private static function parse_readme(): array {
-		$readme_path = WP_PLUGIN_DIR . '/' . dirname( self::PLUGIN_FILE ) . '/README.md';
+		$readme_path = WP_PLUGIN_DIR . '/' . self::get_plugin_directory() . '/README.md';
 
 		if ( ! file_exists( $readme_path ) ) {
 			return array();
@@ -582,12 +733,12 @@ class SMM_GitHub_Updater {
 		}
 
 		// Check if this is our plugin
-		if ( self::PLUGIN_FILE !== $hook_extra['plugin'] ) {
+		if ( self::get_plugin_file() !== $hook_extra['plugin'] ) {
 			return $source;
 		}
 
 		// Expected folder name (extract from PLUGIN_FILE)
-		$correct_folder = dirname( self::PLUGIN_FILE );
+		$correct_folder = self::get_plugin_directory();
 
 		// Get the current folder name from source path
 		$source_folder = basename( untrailingslashit( $source ) );

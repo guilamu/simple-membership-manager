@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Simple Membership Manager plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Simple Membership Manager 1.0.6\n"
+"Project-Id-Version: Simple Membership Manager 1.0.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-24 12:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"

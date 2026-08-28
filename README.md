@@ -85,6 +85,10 @@ Yes, SMM implements the exact function compatibility stubs used by the `advanced
 
 ## Changelog
 
+### 1.0.7 - 2026-08-28
+- **Fixed:** The "View details" link on the Plugins page displayed "Plugin not found." when another plugin's `plugins_api` filter discarded the modal payload. The updater now rebuilds the plugin information object on the `plugins_api_result` filter (with a safe fallback payload) so the details modal always renders.
+- **Improved:** The updater resolves the plugin file and folder dynamically from `SMM_PLUGIN_FILE`, so updates, folder renaming, and the details modal keep working even if the plugin directory has been renamed.
+
 ### 1.0.6 - 2026-08-26
 - **Improved:** Activation emails (paid, free, and trial) now name the membership level instead of the site in their subject line, e.g. `Your "Level name" access on Site name has been activated`.
 - **Improved:** Activation emails use a dedicated `ACCESS ACTIVATED` header instead of the generic greeting. Other notification emails keep the greeting from the email header setting.
